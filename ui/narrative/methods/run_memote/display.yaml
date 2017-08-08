@@ -1,0 +1,65 @@
+#
+# define display information
+#
+name: Memote - Description
+tooltip: |
+    some extended description
+screenshots: []
+icon: icon.png
+
+#
+# define a set of similar methods that might be useful to the user
+#
+suggestions:
+    apps:
+        related:
+            []
+        next:
+            [gapfill_metabolic_model]
+    methods:
+        related:
+            []
+        next:
+            []
+
+#
+# Configure the display and description of parameters
+#
+parameters :
+    model_id :
+        ui-name : |
+            Input Model Name
+        short-hint : |
+            Model with source compounds
+    rule_set :
+        ui-name : |
+            Reaction rule set
+        short-hint : |
+            The set of reaction rules which will be applied to the compounds
+    generations :
+        ui-name : |
+            Number of generations
+        short-hint : |
+            The nuber of times reaction rules will be applied to the compounds
+    out_model_id :
+        ui-name : |
+            Output Model Name
+        short-hint : |
+           Name of new model
+description : |
+
+     <p>Detailed Description goes here</p>
+
+     <p>Implimented in KBase by: Janaka/Christian</p>
+
+publications :
+    -
+        pmid: 26322134
+        display-text : |
+            'J. Jeffryes, R. Colestani, M. El-Badawi, T. Kind... C. Henry “MINEs: Open access databases of computationally predicted enzyme promiscuity products for untargeted metabolomics” J. Cheminformatics 7:44 (2015)'
+        link: http://www.jcheminf.com/content/7/1/44
+    -
+        pmid: 27284066
+        display-text : |
+            'C.Lerma-Ortiz, J.Jeffryes, A.Cooper...C.Henry & A.Hanson “Nothing of chemistry disappears in biology”: The Top 30 damage-prone metabolites Biochem. Soc. Trans. 44, 961-71 (2016)'
+        link: http://www.ncbi.nlm.nih.gov/pubmed/27284066
