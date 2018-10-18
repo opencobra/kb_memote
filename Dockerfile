@@ -7,10 +7,12 @@ MAINTAINER KBase Developer
 # installation scripts.
 
 RUN apt-get update
-RUN pip install --upgrade pip
+#RUN pip install --upgrade pip
 
 # Here we install a python coverage tool and an
 # https library that is out of date in the base image.
+
+RUN pip --version
 
 #RUN pip is
 #RUN pip install coverage
@@ -25,8 +27,8 @@ RUN pip install --upgrade pip
 
 # -----------------------------------------
 
-RUN pip install cobra
-RUN pip install memote
+#RUN pip install cobra
+#RUN pip install memote
 
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
