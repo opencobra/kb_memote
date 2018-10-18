@@ -4,8 +4,9 @@
 import os
 from Bio import SeqIO
 from pprint import pprint, pformat
-from AssemblyUtil.AssemblyUtilClient import AssemblyUtil
+from Workspace.WorkspaceClient import Workspace as workspaceService
 from KBaseReport.KBaseReportClient import KBaseReport
+from kb_memote.kb_memote import KBaseMemote
 #END_HEADER
 
 
@@ -67,11 +68,27 @@ Brief description about memote
         # return variables are: output
         #BEGIN runMemote
 
-        #This is where the implementation code goes
         print("WOW IT DOES NOT WORK !", params)
+        print("CTX", ctx)
+        wsClient = workspaceService(self.workspaceURL, token=ctx['token'])
+        
+        def get_object(wclient, oid, ws):
+            res = wclient.get_objects2({"objects" : [{"name" : oid, "workspace" : ws}]})
+            return res["data"][0]["data"]
+        
+        #This is where the implementation code goes
+
+        #('WOW IT DOES NOT WORK !', {u'model_id': u'e_coli_core.kb', u'media_id': u'e_coli_core.media', u'workspace': u'filipeliu:narrative_1505405117321', u'out_model_id': u'sdasd'})
+        
+        #get model and media from workspace
+        model = get_object(wsClient, params['model_id'], params['workspace'])
+        media = {}
+        #kb_memote.snapshot(model, media)
+        
+        output = {'out_model_id' : params['model_id']}
         
         #END runMemote
-
+        
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
             raise ValueError('Method runMemote return value ' +

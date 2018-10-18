@@ -24,8 +24,8 @@ MAINTAINER KBase Developer
 
 # -----------------------------------------
 
-#RUN pip install cobra
-#RUN pip install memote
+RUN pip install cobra
+RUN pip install memote
 
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
