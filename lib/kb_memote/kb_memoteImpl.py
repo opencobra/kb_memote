@@ -68,7 +68,8 @@ Brief description about memote
         #BEGIN runMemote
 
         #This is where the implementation code goes
-
+        print("WOW IT DOES NOT WORK !", params)
+        
         #END runMemote
 
         # At some point might do deeper type checking...

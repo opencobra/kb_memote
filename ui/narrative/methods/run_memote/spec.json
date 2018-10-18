@@ -1,7 +1,7 @@
 {
     "ver": "0.0.1",
     "authors": [
-        "janaka"
+        "janaka", "fliu"
     ],
     "contact": "janakaed@anl.gov",
     "visible": true,
@@ -23,59 +23,16 @@
             }
         },
         {
-            "id": "rule_set",
-            "optional": false,
+            "id": "media_id",
+            "optional": true,
             "advanced": false,
             "allow_multiple": false,
-            "default_values": [ "enzymatic" ],
-            "field_type": "dropdown",
-            "dropdown_options": {
-                "options": [
-                    {
-                        "value": "enzymatic",
-                        "display": "Enzymatic Rules",
-                        "id": "enz",
-                        "ui_name": "Enzymatic Rules"
-                    },
-                    {
-                        "value": "spontaneous",
-                        "display": "Spontaneous Rules",
-                        "id": "spont",
-                        "ui_name": "Spontaneous Rules"
-                    }
-                ]
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [ "KBaseBiochem.Media" ]
             }
         },
-        {
-		    "id" : "generations",
-		    "optional" : false,
-		    "advanced" : false,
-		    "allow_multiple" : false,
-		    "default_values" : [ 1 ],
-			"field_type": "dropdown",
-            "dropdown_options": {
-                "options": [
-                    {
-                        "value": 1,
-                        "display": "One",
-                        "id": "One",
-                        "ui_name": "One"
-                    },
-                    {
-                        "value": 2,
-                        "display": "Two",
-                        "id": "Two",
-                        "ui_name": "Two"
-                    },
-                    {
-                        "value": 3,
-                        "display": "Three",
-                        "id": "Two",
-                        "ui_name": "Three"
-                    }
-                ]
-            }
-		},
         {
             "id" : "out_model_id",
             "optional" : false,
@@ -105,12 +62,8 @@
                     "target_property": "model_id"
                 },
                 {
-                    "input_parameter": "rule_set",
-                    "target_property": "rule_set"
-                },
-                {
-                    "input_parameter": "generations",
-                    "target_property": "generations"
+                    "input_parameter": "media_id",
+                    "target_property": "media_id"
                 },
                 {
                     "input_parameter": "out_model_id",
