@@ -35,6 +35,7 @@ RUN pip install -I six
 RUN pip install -I numpy
 RUN pip install -I cobra
 RUN pip install -I memote
+RUN pip install -I cobrakbase
 
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work

@@ -4,9 +4,9 @@
 import os
 from Bio import SeqIO
 from pprint import pprint, pformat
-from Workspace.WorkspaceClient import Workspace as workspaceService
+from Workspace.WorkspaceClient import Workspace
 from KBaseReport.KBaseReportClient import KBaseReport
-from kb_memote.kb_memote import KBaseMemote
+#from kb_memote.kb_memote import KBaseMemote
 #END_HEADER
 
 
@@ -70,7 +70,7 @@ Brief description about memote
 
         print("WOW IT DOES NOT WORK !", params)
         print("CTX", ctx)
-        wsClient = workspaceService(self.workspaceURL, token=ctx['token'])
+        wsClient = Workspace("https://kbase.us/services/ws/", token=ctx['token'])
         
         def get_object(wclient, oid, ws):
             res = wclient.get_objects2({"objects" : [{"name" : oid, "workspace" : ws}]})
