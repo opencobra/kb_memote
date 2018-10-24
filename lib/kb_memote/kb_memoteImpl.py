@@ -146,10 +146,10 @@ Brief description about memote
             'report_object_name' : 'runMemote_' + uuid.uuid4().hex,
             'objects_created' : [],
             'html_links' : [
-                {'name' : 'report', 'description' : 'rep desc', 'path' : report_folder + "/report.html"}
+                {'name' : 'report', 'description' : 'Memote HTML Report', 'path' : report_folder + "/report.html"}
             ],
             'file_links' : [
-                {'name' : 'name', 'description' : 'desc', 'path' : report_folder + "/model.xml"}
+                {'name' : params['model_id'] + ".xml", 'description' : 'desc', 'path' : report_folder + "/model.xml"}
             ]
         }
         
