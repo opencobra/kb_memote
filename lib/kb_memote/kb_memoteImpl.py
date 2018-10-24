@@ -3,17 +3,23 @@
 # The header block is where all import statments should live
 from __future__ import print_function
 import os
+import uuid
 from Bio import SeqIO
 from pprint import pprint, pformat
 from AssemblyUtil.AssemblyUtilClient import AssemblyUtil
 from KBaseReport.KBaseReportClient import KBaseReport
 from Workspace.WorkspaceClient import Workspace
+from DataFileUtil.DataFileUtilClient import DataFileUtil
 import cobrakbase
+import cobra
 from cobra.core import Gene, Metabolite, Model, Reaction
 #import memote.suite.cli.reports
 from memote.suite.cli.reports import report
 import memote.suite.api as api
 from memote.suite.reporting import ReportConfiguration
+
+from os import listdir
+from os.path import isfile, join
 #END_HEADER
 
 
@@ -76,19 +82,26 @@ Brief description about memote
         #BEGIN runMemote
 
         #This is where the implementation code goes
-        print("WOW IT DOES NOT WORK !", params, ctx)
+        #print("WOW IT DOES NOT WORK !", params, ctx)
+        #print("setup Workspace")
+        
         wsClient = Workspace(self.ws_url, token=ctx['token'])
+        dfuClient = DataFileUtil(self.callback_url)
         
         def get_object(wclient, oid, ws):
             res = wclient.get_objects2({"objects" : [{"name" : oid, "workspace" : ws}]})
             return res["data"][0]["data"]
         
+        print("get workspace model", params['model_id'])
         kmodel = get_object(wsClient, params['model_id'], params['workspace'])
         #media = get_object(wsClient, params['media_id'], params['workspace'])
         
-        print(kmodel.keys())
-        model = convert_kmodel(kmodel, {})
-        print(model.summary())
+        print("model attributes", kmodel.keys())
+        #print(dir())
+        model = cobrakbase.convert_kmodel(kmodel, {})
+        
+        print("COBRA Model", dir(model))
+        #print(model.summary())
         
         a, results = api.test_model(model, results=True)
         config = ReportConfiguration.load()
@@ -96,9 +109,53 @@ Brief description about memote
         
         #with open("report.html", "w") as html_file:
         #    print(html, file=html_file)
-            
-        cobra.io.write_sbml_model(model, "model.xml")
-        output = {'out_model_id' : params['model_id']}
+
+        
+        
+        report_folder = self.shared_folder
+        
+        f = open(report_folder + "/report.html", "w")
+        f.write(html.encode('utf8'))
+        
+        cobra.io.write_sbml_model(model, report_folder + "/model.xml")
+        #/kb/module/work/tmp/56ed386bf8024ea486ee4fa95421a995
+        print("report_folder", report_folder)
+        #os.makedirs(report_folder, 0755);
+        onlyfiles = [f for f in listdir(report_folder) if isfile(join(report_folder, f))]
+        print("Files:", onlyfiles)
+        
+        #shock_id = dfuClient.file_to_shock({
+        #    'file_path' : report_folder,
+        #    'make_handle' : 0,
+        #    'pack' : 'zip'
+        #})['shock_id']
+        
+        #print("shock_id:", shock_id)
+        
+        reportClient = KBaseReport(self.callback_url)
+        report_params = {
+            'direct_html_link_index' : 0,
+            'workspace_name' : params['workspace'],
+            'report_object_name' : 'runMemote_' + uuid.uuid4().hex,
+            'objects_created' : [],
+            'html_links' : [
+                {'name' : 'report', 'description' : 'rep desc', 'path' : report_folder + "/report.html"}
+            ],
+            'file_links' : [
+                {'name' : 'name', 'description' : 'desc', 'path' : report_folder + "/model.xml"}
+            ]
+        }
+        
+        print("create_extended_report", report_params)
+
+        reportInfo = reportClient.create_extended_report(report_params)
+        
+        print("reportInfo", reportInfo)
+        
+        output = {
+            'report_name' : reportInfo['name'],
+            'report_ref' : reportInfo['ref']
+        }
         
         #END runMemote
 

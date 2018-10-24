@@ -5,7 +5,7 @@
     ],
     "contact": "janakaed@anl.gov",
     "visible": true,
-    "categories": ["active"],
+    "categories": ["active", "metabolic_modeling"],
     "widgets": {
         "input": null,
         "output": "kbaseTabTable"
@@ -32,19 +32,7 @@
             "text_options": {
                 "valid_ws_types": [ "KBaseBiochem.Media" ]
             }
-        },
-        {
-            "id" : "out_model_id",
-            "optional" : false,
-            "advanced" : false,
-            "allow_multiple" : false,
-            "default_values" : [ "" ],
-            "field_type" : "text",
-            "text_options" : {
-            "valid_ws_types" : [ "KBaseFBA.FBAModel" ],
-            "is_output_name":true
-            }
-         }
+        }
 
     ],
     "behavior": {
@@ -64,24 +52,20 @@
                 {
                     "input_parameter": "media_id",
                     "target_property": "media_id"
-                },
-                {
-                    "input_parameter": "out_model_id",
-                    "target_property": "out_model_id"
                 }
             ],
             "output_mapping": [
-                {
-                  "constant_value": "KBaseFBA.FBAModel",
-                  "target_property": "type"
+      		    {
+                    "service_method_output_path": [0, "report_name"],
+                    "target_property": "report_name"
                 },
                 {
-                  "input_parameter": "out_model_id",
-                  "target_property": "obj"
+                    "service_method_output_path": [0, "report_ref"],
+                    "target_property": "report_ref"
                 },
                 {
-                  "narrative_system_variable": "workspace",
-                  "target_property": "ws"
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace_name"
                 }
               ]
         }
