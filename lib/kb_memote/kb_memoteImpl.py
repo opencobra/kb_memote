@@ -6,6 +6,7 @@ from Bio import SeqIO
 from pprint import pprint, pformat
 from AssemblyUtil.AssemblyUtilClient import AssemblyUtil
 from KBaseReport.KBaseReportClient import KBaseReport
+from Workspace.WorkspaceClient import Workspace
 #END_HEADER
 
 
@@ -68,7 +69,18 @@ Brief description about memote
         #BEGIN runMemote
 
         #This is where the implementation code goes
-        print("WOW IT DOES NOT WORK !", params)
+        print("WOW IT DOES NOT WORK !", params, ctx)
+        wsClient = Workspace("https://kbase.us/services/ws/", token=ctx['token'])
+        
+        def get_object(wclient, oid, ws):
+            res = wclient.get_objects2({"objects" : [{"name" : oid, "workspace" : ws}]})
+            return res["data"][0]["data"]
+        
+        model = get_object(wsClient, params['model_id'], params['workspace'])
+        
+        print(model.keys())
+        
+        output = {'out_model_id' : params['model_id']}
         
         #END runMemote
 
