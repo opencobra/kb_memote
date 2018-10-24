@@ -94,8 +94,8 @@ Brief description about memote
         config = ReportConfiguration.load()
         html = api.snapshot_report(results, config)
         
-        with open("report.html", "w") as html_file:
-            print(html, file=html_file)
+        #with open("report.html", "w") as html_file:
+        #    print(html, file=html_file)
             
         cobra.io.write_sbml_model(model, "model.xml")
         output = {'out_model_id' : params['model_id']}
