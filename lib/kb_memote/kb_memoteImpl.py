@@ -82,10 +82,19 @@ Brief description about memote
             res = wclient.get_objects2({"objects" : [{"name" : oid, "workspace" : ws}]})
             return res["data"][0]["data"]
         
-        model = get_object(wsClient, params['model_id'], params['workspace'])
+        kmodel = get_object(wsClient, params['model_id'], params['workspace'])
+        print(kmodel.keys())
+        model = convert_kmodel(kmodel, {})
+        model.summary()
         
-        print(model.keys())
+        a, results = api.test_model(model, results=True)
+        config = ReportConfiguration.load()
+        html = api.snapshot_report(results, config)
         
+        with open("report.html", "w") as html_file:
+            print(html, file=html_file)
+            
+        cobra.io.write_sbml_model(model, "model.xml")
         output = {'out_model_id' : params['model_id']}
         
         #END runMemote
