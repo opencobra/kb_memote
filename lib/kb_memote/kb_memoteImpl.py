@@ -94,23 +94,30 @@ Brief description about memote
         
         print("get workspace model", params['model_id'])
         kmodel = get_object(wsClient, params['model_id'], params['workspace'])
-        #media = get_object(wsClient, params['media_id'], params['workspace'])
+        
+        media_constraints = {}
+        
+        if 'media_id' in params and not params['media_id'] == "":
+            media = get_object(wsClient, params['media_id'], params['workspace'])
+            media_constraints = cobrakbase.convert_media(media)
         
         print("model attributes", kmodel.keys())
         #print(dir())
-        model = cobrakbase.convert_kmodel(kmodel, {})
+        model = cobrakbase.convert_kmodel(kmodel, media_constraints)
         
         print("COBRA Model", dir(model))
-        #print(model.summary())
+        
+        solution = model.optimize()
+        print("solution", solution)
         
         a, results = api.test_model(model, results=True)
         config = ReportConfiguration.load()
+        
+        html = ""
         html = api.snapshot_report(results, config)
         
         #with open("report.html", "w") as html_file:
         #    print(html, file=html_file)
-
-        
         
         report_folder = self.shared_folder
         

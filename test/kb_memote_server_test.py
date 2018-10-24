@@ -93,10 +93,9 @@ class kb_memoteTest(unittest.TestCase):
                         
         #iMR1_799 iJO1366_no_inte kb.Ec_core_flux1
         result = self.getImpl().runMemote(self.getContext(), {
-            'model_id': 'kb.Ec_core_flux1',
+            'model_id': 'iMR1_799',
             'media_id': 'media',
-            'workspace': 'filipeliu:narrative_1505345231093',
-            'out_model_id': 'iMR1_799'
+            'workspace': 'filipeliu:narrative_1505345231093'
         })
         
         print("test_run_memote_ok", result)
