@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #BEGIN_HEADER
 # The header block is where all import statments should live
-import os
 from __future__ import print_function
+import os
 from Bio import SeqIO
 from pprint import pprint, pformat
 from AssemblyUtil.AssemblyUtilClient import AssemblyUtil
