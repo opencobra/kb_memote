@@ -2,6 +2,7 @@
 #BEGIN_HEADER
 # The header block is where all import statments should live
 import os
+from __future__ import print_function
 from Bio import SeqIO
 from pprint import pprint, pformat
 from AssemblyUtil.AssemblyUtilClient import AssemblyUtil
@@ -83,9 +84,11 @@ Brief description about memote
             return res["data"][0]["data"]
         
         kmodel = get_object(wsClient, params['model_id'], params['workspace'])
+        #media = get_object(wsClient, params['media_id'], params['workspace'])
+        
         print(kmodel.keys())
         model = convert_kmodel(kmodel, {})
-        model.summary()
+        print(model.summary())
         
         a, results = api.test_model(model, results=True)
         config = ReportConfiguration.load()
