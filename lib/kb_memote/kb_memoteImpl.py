@@ -43,7 +43,7 @@ Brief description about memote
         # saved in the constructor.
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.shared_folder = config['scratch']
-
+        self.ws_url = config['workspace-url']
         #END_CONSTRUCTOR
         pass
 
@@ -70,7 +70,7 @@ Brief description about memote
 
         #This is where the implementation code goes
         print("WOW IT DOES NOT WORK !", params, ctx)
-        wsClient = Workspace("https://kbase.us/services/ws/", token=ctx['token'])
+        wsClient = Workspace(self.ws_url, token=ctx['token'])
         
         def get_object(wclient, oid, ws):
             res = wclient.get_objects2({"objects" : [{"name" : oid, "workspace" : ws}]})
