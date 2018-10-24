@@ -7,6 +7,12 @@ from pprint import pprint, pformat
 from AssemblyUtil.AssemblyUtilClient import AssemblyUtil
 from KBaseReport.KBaseReportClient import KBaseReport
 from Workspace.WorkspaceClient import Workspace
+import cobrakbase
+from cobra.core import Gene, Metabolite, Model, Reaction
+#import memote.suite.cli.reports
+from memote.suite.cli.reports import report
+import memote.suite.api as api
+from memote.suite.reporting import ReportConfiguration
 #END_HEADER
 
 
