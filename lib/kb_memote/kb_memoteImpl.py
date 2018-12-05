@@ -148,9 +148,9 @@ Brief description about memote
         #for m in model.reactions:
         #    print(m.id, m.annotation)
         
-        #a, results = api.test_model(model, results=True)
-        #config = ReportConfiguration.load()
-        #html = api.snapshot_report(results, config)
+        a, results = api.test_model(model, results=True)
+        config = ReportConfiguration.load()
+        html = api.snapshot_report(results, config)
         
         #with open("report.html", "w") as html_file:
         #    print(html, file=html_file)
