@@ -92,11 +92,17 @@ class kb_memoteTest(unittest.TestCase):
     def test_run_memote_ok(self):
                         
         #iMR1_799 iJO1366_no_inte kb.Ec_core_flux1
-        result = self.getImpl().runMemote(self.getContext(), {
+        example1 = {
             'model_id': 'iMR1_799',
-            'media_id': 'media',
+            'media_id': '',
             'workspace': 'filipeliu:narrative_1505345231093'
-        })
+        }
+        example2 = {
+            'model_id': 'ecoli.model',
+            'media_id': '',
+            'workspace': 'filipeliu:narrative_1543990426496'
+        }
+        result = self.getImpl().runMemote(self.getContext(), example2)
         
         print("test_run_memote_ok", result)
         #assembly_ref = self.load_fasta_file(os.path.join(self.scratch, 'test1.fasta'),

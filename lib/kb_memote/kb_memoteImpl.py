@@ -18,6 +18,10 @@ from memote.suite.cli.reports import report
 import memote.suite.api as api
 from memote.suite.reporting import ReportConfiguration
 
+import urllib2
+
+import pandas as pd
+
 from os import listdir
 from os.path import isfile, join
 #END_HEADER
@@ -95,26 +99,58 @@ Brief description about memote
         print("get workspace model", params['model_id'])
         kmodel = get_object(wsClient, params['model_id'], params['workspace'])
         
-        media_constraints = {}
+        media_constraints = None
         
         if 'media_id' in params and not params['media_id'] == "":
+            print("MEDIA ID", params['media_id'])
             media = get_object(wsClient, params['media_id'], params['workspace'])
             media_constraints = cobrakbase.convert_media(media)
         
         print("model attributes", kmodel.keys())
         #print(dir())
         model = cobrakbase.convert_kmodel(kmodel, media_constraints)
-        
+        html = ""
         print("COBRA Model", dir(model))
         
         solution = model.optimize()
         print("solution", solution)
         
-        a, results = api.test_model(model, results=True)
-        config = ReportConfiguration.load()
+        #use urls for now but later get from local
+        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Aliases/Compounds_Aliases.tsv')
+        cpd_df = pd.read_csv(data, sep='\t')
         
-        html = ""
-        html = api.snapshot_report(results, config)
+        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Aliases/Reactions_Aliases.tsv')
+        rxn_df = pd.read_csv(data, sep='\t')
+
+        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Structures/ModelSEED_Structures.txt')
+        stru_df = pd.read_csv(data, sep='\t')
+        
+        structures  = cobrakbase.read_modelseed_compound_structures(stru_df)
+        rxn_aliases = cobrakbase.read_modelseed_reaction_aliases(rxn_df)
+        cpd_aliases = cobrakbase.read_modelseed_compound_aliases(cpd_df)
+        
+        for m in model.metabolites:
+            seed_id = None
+            if 'seed.compound' in m.annotation:
+                seed_id = m.annotation['seed.compound']
+            if seed_id in structures:
+                m.annotation.update(structures[seed_id])
+            if seed_id in cpd_aliases:
+                m.annotation.update(cpd_aliases[seed_id])
+                
+        for r in model.reactions:
+            seed_id = None
+            if 'seed.reaction' in r.annotation:
+                seed_id = r.annotation['seed.reaction']
+            if seed_id in rxn_aliases:
+                r.annotation.update(rxn_aliases[seed_id])
+        
+        #for m in model.reactions:
+        #    print(m.id, m.annotation)
+        
+        #a, results = api.test_model(model, results=True)
+        #config = ReportConfiguration.load()
+        #html = api.snapshot_report(results, config)
         
         #with open("report.html", "w") as html_file:
         #    print(html, file=html_file)
