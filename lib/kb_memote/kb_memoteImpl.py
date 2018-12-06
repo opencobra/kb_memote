@@ -92,6 +92,10 @@ Brief description about memote
         wsClient = Workspace(self.ws_url, token=ctx['token'])
         dfuClient = DataFileUtil(self.callback_url)
         
+        def get_object_info_from_ref(ws, ref):
+            return ws.get_object_info3({'objects' : [{'ref' : ref}]}
+        )
+        
         def get_object(wclient, oid, ws):
             res = wclient.get_objects2({"objects" : [{"name" : oid, "workspace" : ws}]})
             return res["data"][0]["data"]
@@ -106,11 +110,28 @@ Brief description about memote
             media = get_object(wsClient, params['media_id'], params['workspace'])
             media_constraints = cobrakbase.convert_media(media)
         
-        print("model attributes", kmodel.keys())
+        
+        if media_constraints == None:
+            if 'gapfillings' in kmodel and len(kmodel['gapfillings']) > 0:
+                print("Pulling media from gapfilling...", kmodel['gapfillings'])
+                ref = kmodel['gapfillings'][0]['media_ref']
+                ref_data = get_object_info_from_ref(wsClient, ref)['infos'][0]
+                o_id = ref_data[1]
+                o_ws = ref_data[7]
+                o_data = get_object(wsClient, o_id, o_ws)
+                media_constraints = cobrakbase.convert_media(o_data)
+        
+        print("Loading genome...", kmodel['genome_ref'])
+        ref_data = get_object_info_from_ref(wsClient, kmodel['genome_ref'])['infos'][0]
+        o_id = ref_data[1]
+        o_ws = ref_data[7]
+        genome = get_object(wsClient, o_id, o_ws)
+        
+        #print("model attributes", kmodel.keys())
         #print(dir())
         model = cobrakbase.convert_kmodel(kmodel, media_constraints)
         html = ""
-        print("COBRA Model", dir(model))
+        #print("COBRA Model", dir(model))
         
         solution = model.optimize()
         print("solution", solution)
@@ -128,6 +149,7 @@ Brief description about memote
         structures  = cobrakbase.read_modelseed_compound_structures(stru_df)
         rxn_aliases = cobrakbase.read_modelseed_reaction_aliases(rxn_df)
         cpd_aliases = cobrakbase.read_modelseed_compound_aliases(cpd_df)
+        gene_aliases = cobrakbase.read_genome_aliases(genome)
         
         for m in model.metabolites:
             seed_id = None
@@ -145,10 +167,14 @@ Brief description about memote
             if seed_id in rxn_aliases:
                 r.annotation.update(rxn_aliases[seed_id])
         
-        #for m in model.reactions:
-        #    print(m.id, m.annotation)
+        for g in model.genes:
+            if g.id in gene_aliases:
+                g.annotation.update(gene_aliases[g.id])
         
-        a, results = api.test_model(model, results=True)
+        #for m in model.genes:
+        #    print(m.id, m.annotation)
+            
+        a, results = api.test_model(model, results=True, skip=['test_thermodynamics'])
         config = ReportConfiguration.load()
         html = api.snapshot_report(results, config)
         

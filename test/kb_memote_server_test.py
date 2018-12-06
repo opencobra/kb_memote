@@ -102,7 +102,12 @@ class kb_memoteTest(unittest.TestCase):
             'media_id': '',
             'workspace': 'filipeliu:narrative_1543990426496'
         }
-        result = self.getImpl().runMemote(self.getContext(), example2)
+        example3 = {
+            'model_id': 'e_coli_core.kb',
+            'media_id': '',
+            'workspace': 'filipeliu:narrative_1543990426496'
+        }
+        result = self.getImpl().runMemote(self.getContext(), example3)
         
         print("test_run_memote_ok", result)
         #assembly_ref = self.load_fasta_file(os.path.join(self.scratch, 'test1.fasta'),
