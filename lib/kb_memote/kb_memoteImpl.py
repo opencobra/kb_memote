@@ -105,7 +105,7 @@ Brief description about memote
         
         media_constraints = None
         
-        if 'media_id' in params and not params['media_id'] == "":
+        if 'media_id' in params and not params['media_id'] == "" and not params['media_id'] == None:
             print("MEDIA ID", params['media_id'])
             media = get_object(wsClient, params['media_id'], params['workspace'])
             media_constraints = cobrakbase.convert_media(media)
@@ -149,7 +149,41 @@ Brief description about memote
         structures  = cobrakbase.read_modelseed_compound_structures(stru_df)
         rxn_aliases = cobrakbase.read_modelseed_reaction_aliases(rxn_df)
         cpd_aliases = cobrakbase.read_modelseed_compound_aliases(cpd_df)
-        gene_aliases = cobrakbase.read_genome_aliases(genome)
+        
+        #temp fix for 
+        def get_old_alias(alias, feature, gene_aliases):
+            if alias.startswith('EcoGene:'):
+                gene_aliases[feature['id']]['ecogene'] = alias.split(':')[1]
+            elif alias.startswith('UniProtKB/Swiss-Prot:'):
+                gene_aliases[feature['id']]['uniprot'] = alias.split(':')[1]
+            elif alias.startswith('NP_'):
+                gene_aliases[feature['id']]['ncbiprotein'] = alias
+            elif alias.startswith('ASAP:'):
+                gene_aliases[feature['id']]['asap'] = alias.split(':')[1]
+            elif alias.startswith('GI:'):
+                gene_aliases[feature['id']]['ncbigi'] = alias
+            elif alias.startswith('GeneID:'):
+                gene_aliases[feature['id']]['ncbigene'] = alias.split(':')[1]
+            else:
+                1
+
+        def read_genome_aliases_temp(genome):
+            gene_aliases = {}
+            for feature in genome['features']:
+                gene_aliases[feature['id']] = {}
+                if 'aliases' in feature and type(feature['aliases']) == list:
+                    for alias in feature['aliases']:
+                        if type(alias) == list:
+                            for a in alias:
+                                #risk parsing the first element
+                                get_old_alias(a, feature, gene_aliases)
+                        else:
+                            get_old_alias(alias, feature, gene_aliases)
+                            #print('discard', alias)
+                #print(feature['aliases' in ])
+            return gene_aliases
+        
+        gene_aliases = read_genome_aliases_temp(genome)
         
         for m in model.metabolites:
             seed_id = None
