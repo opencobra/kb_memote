@@ -7,7 +7,7 @@ MAINTAINER KBase Developer
 # installation scripts.
 
 # RUN apt-get update
-
+RUN echo test
 RUN mkdir -p /kb/module
 RUN wget https://files.pythonhosted.org/packages/45/ae/8a0ad77defb7cc903f09e551d88b443304a9bd6e6f124e75c0fbbf6de8f7/pip-18.1.tar.gz -O /kb/module/pip.tar.gz
 RUN tar -xvf /kb/module/pip.tar.gz -C /kb/module
@@ -29,9 +29,9 @@ RUN cd /kb/module/pip-18.1 && python setup.py install
 
 # -----------------------------------------
 
+RUN pip install -I cobrakbase==0.1.2
 RUN pip install -I cobra
 RUN pip install -I memote
-RUN pip install -I cobrakbase==0.1.2
 
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work

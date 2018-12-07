@@ -136,18 +136,15 @@ Brief description about memote
         solution = model.optimize()
         print("solution", solution)
         
-        #use urls for now but later get from local
-        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Aliases/Unique_ModelSEED_Compound_Aliases.txt')
-        cpd_df = pd.read_csv(data, sep='\t')
+        cpd_ref_file = '/kb/module/data/Unique_ModelSEED_Compound_Aliases.txt'
+        rxn_ref_file = '/kb/module/data/Unique_ModelSEED_Reaction_Aliases.txt'
+        rxn_ec_file  = '/kb/module/data/Unique_ModelSEED_Reaction_ECs.txt'
+        cpd_stru_file = '/kb/module/data/ModelSEED_Structures.txt'
 
-        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Aliases/Unique_ModelSEED_Reaction_Aliases.txt')
-        rxn_df = pd.read_csv(data, sep='\t')
-
-        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Aliases/Unique_ModelSEED_Reaction_ECs.txt')
-        rxn_ec_df = pd.read_csv(data, sep='\t')
-
-        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Structures/ModelSEED_Structures.txt')
-        stru_df = pd.read_csv(data, sep='\t')
+        cpd_df    = pd.read_csv(cpd_ref_file,  sep='\t')
+        rxn_df    = pd.read_csv(rxn_ref_file,  sep='\t')
+        rxn_ec_df = pd.read_csv(rxn_ec_file,   sep='\t')
+        stru_df   = pd.read_csv(cpd_stru_file, sep='\t')
         
         structures  = cobrakbase.read_modelseed_compound_structures(stru_df)
         rxn_aliases = cobrakbase.read_modelseed_reaction_aliases2(rxn_df)
