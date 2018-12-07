@@ -5,7 +5,8 @@ name: Memote - Genome-Scale Model Test Suite
 tooltip: |
     Genome-Scale Model Test Suite
 screenshots: []
-icon: icon.png
+
+icon: memote.png
 
 #
 # define a set of similar methods that might be useful to the user
