@@ -29,10 +29,9 @@ RUN cd /kb/module/pip-18.1 && python setup.py install
 
 # -----------------------------------------
 
-RUN pip install -I cobrakbase==0.1.1
 RUN pip install -I cobra
 RUN pip install -I memote
-
+RUN pip install -I cobrakbase==0.1.2
 
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work

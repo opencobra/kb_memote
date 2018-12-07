@@ -137,53 +137,22 @@ Brief description about memote
         print("solution", solution)
         
         #use urls for now but later get from local
-        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Aliases/Compounds_Aliases.tsv')
+        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Aliases/Unique_ModelSEED_Compound_Aliases.txt')
         cpd_df = pd.read_csv(data, sep='\t')
-        
-        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Aliases/Reactions_Aliases.tsv')
+
+        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Aliases/Unique_ModelSEED_Reaction_Aliases.txt')
         rxn_df = pd.read_csv(data, sep='\t')
+
+        data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Aliases/Unique_ModelSEED_Reaction_ECs.txt')
+        rxn_ec_df = pd.read_csv(data, sep='\t')
 
         data = urllib2.urlopen('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/dev/Biochemistry/Structures/ModelSEED_Structures.txt')
         stru_df = pd.read_csv(data, sep='\t')
         
         structures  = cobrakbase.read_modelseed_compound_structures(stru_df)
-        rxn_aliases = cobrakbase.read_modelseed_reaction_aliases(rxn_df)
-        cpd_aliases = cobrakbase.read_modelseed_compound_aliases(cpd_df)
-        
-        #temp fix for 
-        def get_old_alias(alias, feature, gene_aliases):
-            if alias.startswith('EcoGene:'):
-                gene_aliases[feature['id']]['ecogene'] = alias.split(':')[1]
-            elif alias.startswith('UniProtKB/Swiss-Prot:'):
-                gene_aliases[feature['id']]['uniprot'] = alias.split(':')[1]
-            elif alias.startswith('NP_'):
-                gene_aliases[feature['id']]['ncbiprotein'] = alias
-            elif alias.startswith('ASAP:'):
-                gene_aliases[feature['id']]['asap'] = alias.split(':')[1]
-            elif alias.startswith('GI:'):
-                gene_aliases[feature['id']]['ncbigi'] = alias
-            elif alias.startswith('GeneID:'):
-                gene_aliases[feature['id']]['ncbigene'] = alias.split(':')[1]
-            else:
-                1
-
-        def read_genome_aliases_temp(genome):
-            gene_aliases = {}
-            for feature in genome['features']:
-                gene_aliases[feature['id']] = {}
-                if 'aliases' in feature and type(feature['aliases']) == list:
-                    for alias in feature['aliases']:
-                        if type(alias) == list:
-                            for a in alias:
-                                #risk parsing the first element
-                                get_old_alias(a, feature, gene_aliases)
-                        else:
-                            get_old_alias(alias, feature, gene_aliases)
-                            #print('discard', alias)
-                #print(feature['aliases' in ])
-            return gene_aliases
-        
-        gene_aliases = read_genome_aliases_temp(genome)
+        rxn_aliases = cobrakbase.read_modelseed_reaction_aliases2(rxn_df)
+        cpd_aliases = cobrakbase.read_modelseed_compound_aliases2(cpd_df)
+        gene_aliases = cobrakbase.read_genome_aliases(genome)
         
         for m in model.metabolites:
             seed_id = None
@@ -193,17 +162,34 @@ Brief description about memote
                 m.annotation.update(structures[seed_id])
             if seed_id in cpd_aliases:
                 m.annotation.update(cpd_aliases[seed_id])
-                
+
         for r in model.reactions:
             seed_id = None
             if 'seed.reaction' in r.annotation:
                 seed_id = r.annotation['seed.reaction']
             if seed_id in rxn_aliases:
                 r.annotation.update(rxn_aliases[seed_id])
-        
+
         for g in model.genes:
             if g.id in gene_aliases:
                 g.annotation.update(gene_aliases[g.id])
+
+        for r in model.reactions:
+            if cobrakbase.is_translocation(r):
+                if cobrakbase.is_transport(r):
+                    r.annotation['sbo'] = 'SBO:0000655'
+                else:
+                    r.annotation['sbo'] = 'SBO:0000185'
+
+        kbase_sinks = ['rxn13783_c0', 'rxn13784_c0', 'rxn13782_c0']
+
+        for r in model.reactions:
+            #r.annotation['ec-code'] = '1.1.1.1'
+            #r.annotation['metanetx.reaction'] = 'MNXR103371'
+            if r.id in kbase_sinks:
+                r.annotation['sbo'] = 'SBO:0000632'
+            if r.id.startswith('DM_'):
+                r.annotation['sbo'] = 'SBO:0000628'
         
         #for m in model.genes:
         #    print(m.id, m.annotation)
