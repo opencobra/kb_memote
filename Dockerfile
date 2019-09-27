@@ -10,8 +10,9 @@ MAINTAINER KBase Developer
 
 
 # -----------------------------------------
-
+RUN echo "bump"
 RUN pip install --upgrade pip
+
 RUN pip install cobra
 RUN pip install cobrakbase
 RUN pip install memote
