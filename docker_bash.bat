@@ -1,1 +1,0 @@
-docker run -it --entrypoint /bin/bash kb_memote

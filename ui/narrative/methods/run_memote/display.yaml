@@ -3,9 +3,10 @@
 #
 name: Memote - Genome-Scale Model Test Suite
 tooltip: |
-    some extended description
+    Genome-Scale Model Test Suite
 screenshots: []
-icon: icon.png
+
+icon: memote.png
 
 #
 # define a set of similar methods that might be useful to the user
@@ -36,11 +37,6 @@ parameters :
             Media
         short-hint : |
             Media to test with the model
-    out_model_id :
-        ui-name : |
-            Delete this later
-        short-hint : |
-            Name of new model
 description : |
 
      <p>memote - the genome-scale metabolic model test suite</p>

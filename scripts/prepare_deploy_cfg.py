@@ -2,8 +2,12 @@ import sys
 import os
 import os.path
 from jinja2 import Template
-from ConfigParser import ConfigParser
-import StringIO
+try:
+    from configparser import ConfigParser
+    from io import StringIO
+except ImportError:
+    from ConfigParser import ConfigParser
+    from StringIO import StringIO
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
@@ -29,11 +33,13 @@ if __name__ == "__main__":
                 "njsw_url = " + kbase_endpoint + "/njs_wrapper\n"
         if "AUTH_SERVICE_URL" in os.environ:
             props += "auth_service_url = " + os.environ.get("AUTH_SERVICE_URL") + "\n"
-        elif "auth2services" in kbase_endpoint:
-            props += "auth_service_url = " + kbase_endpoint + "/auth/api/legacy/KBase/Sessions/Login\n"
         props += "auth_service_url_allow_insecure = " + \
                  os.environ.get("AUTH_SERVICE_URL_ALLOW_INSECURE", "false") + "\n"
-        config.readfp(StringIO.StringIO(props))
+        for key in os.environ:
+            if key.startswith('KBASE_SECURE_CONFIG_PARAM_'):
+                param_name = key[len('KBASE_SECURE_CONFIG_PARAM_'):]
+                props += param_name + " = " + os.environ.get(key) + "\n"
+        config.readfp(StringIO(props))
     else:
         raise ValueError('Neither ' + sys.argv[2] + ' file nor KBASE_ENDPOINT env-variable found')
     props = dict(config.items("global"))

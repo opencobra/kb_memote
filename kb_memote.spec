@@ -1,40 +1,26 @@
 /*
 A KBase module: kb_memote
-Brief description about memote
 */
 
 module kb_memote {
-
-    /*
-        A 'typedef' can also be used to define compound or container
-        objects, like lists, maps, and structures.  The standard KBase
-        convention is to use structures, as shown here, to define the
-        input and output of your function.  Here the input is a
-        reference to the Assembly data object, a workspace to save
-        output, and a length threshold for filtering.
-
-        To define lists and maps, use a syntax similar to C++ templates
-        to indicate the type contained in the list or map.  For example:
-
-            list <string> list_of_strings;
-            mapping <string, int> map_of_ints;
-    */
-
     typedef structure {
-        string compound_id;
-        string compound_name;
-    } EachCompound;
+        string report_name;
+        string report_ref;
+    } ReportResults;
 
     typedef structure {
         string workspace;
         string model_id;
         string media_id;
-        string out_model_id;
     } RunMemoteParams;
-
+    
     typedef structure {
-        string model_ref;
+        string report_name;
+        string report_ref;
     } RunMemoteResults;
+    
+    funcdef run_memote(RunMemoteParams params) returns (RunMemoteResults output) authentication required;
+    
+    funcdef run_kb_memote(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
-    funcdef runMemote(RunMemoteParams params) returns (RunMemoteResults output) authentication required;
 };
