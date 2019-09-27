@@ -39,7 +39,7 @@
         "service-mapping": {
             "url": "",
             "name": "kb_memote",
-            "method": "runMemote",
+            "method": "run_memote",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",

@@ -1,22 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from wsgiref.simple_server import make_server
-import sys
-import json
-import traceback
 import datetime
-from multiprocessing import Process
+import json
+import os
+import random as _random
+import sys
+import traceback
 from getopt import getopt, GetoptError
-from jsonrpcbase import JSONRPCService, InvalidParamsError, KeywordError,\
+from multiprocessing import Process
+from os import environ
+from wsgiref.simple_server import make_server
+
+import requests as _requests
+from jsonrpcbase import JSONRPCService, InvalidParamsError, KeywordError, \
     JSONRPCError, InvalidRequestError
 from jsonrpcbase import ServerError as JSONServerError
-from os import environ
-from ConfigParser import ConfigParser
+
 from biokbase import log
-import requests as _requests
-import random as _random
-import os
 from kb_memote.authclient import KBaseAuth as _KBaseAuth
+
+try:
+    from ConfigParser import ConfigParser
+except ImportError:
+    from configparser import ConfigParser
 
 DEPLOY = 'KB_DEPLOYMENT_CONFIG'
 SERVICE = 'KB_SERVICE_NAME'
@@ -109,11 +115,10 @@ class JSONRPCServiceCustom(JSONRPCService):
             # Exception was raised inside the method.
             newerr = JSONServerError()
             newerr.trace = traceback.format_exc()
-            if isinstance(e.message, basestring):
-                newerr.data = e.message
+            if len(e.args) == 1:
+                newerr.data = repr(e.args[0])
             else:
-                # Some exceptions embed other exceptions as the message
-                newerr.data = repr(e.message)
+                newerr.data = repr(e.args)
             raise newerr
         return result
 
@@ -175,7 +180,7 @@ class JSONRPCServiceCustom(JSONRPCService):
 
     def _handle_request(self, ctx, request):
         """Handles given request and returns its response."""
-        if self.method_data[request['method']].has_key('types'):  # noqa @IgnorePep8
+        if 'types' in self.method_data[request['method']]:
             self._validate_params_types(request['method'], request['params'])
 
         result = self._call_method(ctx, request)
@@ -333,10 +338,14 @@ class Application(object):
         self.serverlog.set_log_level(6)
         self.rpc_service = JSONRPCServiceCustom()
         self.method_authentication = dict()
-        self.rpc_service.add(impl_kb_memote.runMemote,
-                             name='kb_memote.runMemote',
+        self.rpc_service.add(impl_kb_memote.run_memote,
+                             name='kb_memote.run_memote',
                              types=[dict])
-        self.method_authentication['kb_memote.runMemote'] = 'required'  # noqa
+        self.method_authentication['kb_memote.run_memote'] = 'required'  # noqa
+        self.rpc_service.add(impl_kb_memote.run_kb_memote,
+                             name='kb_memote.run_kb_memote',
+                             types=[dict])
+        self.method_authentication['kb_memote.run_kb_memote'] = 'required'  # noqa
         self.rpc_service.add(impl_kb_memote.status,
                              name='kb_memote.status',
                              types=[dict])
@@ -404,7 +413,7 @@ class Application(object):
                                 ctx['user_id'] = user
                                 ctx['authenticated'] = 1
                                 ctx['token'] = token
-                            except Exception, e:
+                            except Exception as e:
                                 if auth_req == 'required':
                                     err = JSONServerError()
                                     err.data = \
@@ -435,11 +444,11 @@ class Application(object):
                     rpc_result = self.process_error(err, ctx, req,
                                                     traceback.format_exc())
 
-        # print 'Request method was %s\n' % environ['REQUEST_METHOD']
-        # print 'Environment dictionary is:\n%s\n' % pprint.pformat(environ)
-        # print 'Request body was: %s' % request_body
-        # print 'Result from the method call is:\n%s\n' % \
-        #    pprint.pformat(rpc_result)
+        # print('Request method was %s\n' % environ['REQUEST_METHOD'])
+        # print('Environment dictionary is:\n%s\n' % pprint.pformat(environ))
+        # print('Request body was: %s' % request_body)
+        # print('Result from the method call is:\n%s\n' % \
+        #    pprint.pformat(rpc_result))
 
         if rpc_result:
             response_body = rpc_result
@@ -453,7 +462,7 @@ class Application(object):
             ('content-type', 'application/json'),
             ('content-length', str(len(response_body)))]
         start_response(status, response_headers)
-        return [response_body]
+        return [response_body.encode('utf8')]
 
     def process_error(self, error, context, request, trace=None):
         if trace:
@@ -505,7 +514,7 @@ try:
 # a wsgi container that has enabled gevent, such as
 # uwsgi with the --gevent option
     if config is not None and config.get('gevent_monkeypatch_all', False):
-        print "Monkeypatching std libraries for async"
+        print("Monkeypatching std libraries for async")
         from gevent import monkey
         monkey.patch_all()
     uwsgi.applications = {'': application}
@@ -529,7 +538,7 @@ def start_server(host='localhost', port=0, newprocess=False):
         raise RuntimeError('server is already running')
     httpd = make_server(host, port, application)
     port = httpd.server_address[1]
-    print "Listening on port %s" % port
+    print("Listening on port %s" % port)
     if newprocess:
         _proc = Process(target=httpd.serve_forever)
         _proc.daemon = True
@@ -608,7 +617,7 @@ if __name__ == "__main__":
         opts, args = getopt(sys.argv[1:], "", ["port=", "host="])
     except GetoptError as err:
         # print help information and exit:
-        print str(err)  # will print something like "option -a not recognized"
+        print(str(err))  # will print something like "option -a not recognized"
         sys.exit(2)
     port = 9999
     host = 'localhost'
@@ -617,12 +626,12 @@ if __name__ == "__main__":
             port = int(a)
         elif o == '--host':
             host = a
-            print "Host set to %s" % host
+            print("Host set to %s" % host)
         else:
             assert False, "unhandled option"
 
     start_server(host=host, port=port)
-#    print "Listening on port %s" % port
+#    print("Listening on port %s" % port)
 #    httpd = make_server( host, port, application)
 #
 #    httpd.serve_forever()
