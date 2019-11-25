@@ -48,18 +48,24 @@ parameters :
            Name of new model
 description : |
 
-     <p>Detailed Description goes here</p>
+     <p>Genome-scale metabolic models are tough to understand at a glance.
+     Memote, short for metabolic model tests, is here to change that.
+     For a given metabolic model, the tests in memote fulfill two purposes:
+     They give you 1. an independent, comparable score and 2. a comprehensive overview.
+     The tests were selected on the basis of previously established guidelines and are
+     continuously curated by the community. For further information visit
+     <a href="https://memote.io/">memote.io</a></p>
 
-     <p>Implimented in KBase by: Janaka/Christian</p>
+     <p>Implemented in KBase by: Janaka/Christian/Filipe</p>
 
-publications :
-    -
-        pmid: 26322134
-        display-text : |
-            'J. Jeffryes, R. Colestani, M. El-Badawi, T. Kind... C. Henry “MINEs: Open access databases of computationally predicted enzyme promiscuity products for untargeted metabolomics” J. Cheminformatics 7:44 (2015)'
-        link: http://www.jcheminf.com/content/7/1/44
-    -
-        pmid: 27284066
-        display-text : |
-            'C.Lerma-Ortiz, J.Jeffryes, A.Cooper...C.Henry & A.Hanson “Nothing of chemistry disappears in biology”: The Top 30 damage-prone metabolites Biochem. Soc. Trans. 44, 961-71 (2016)'
-        link: http://www.ncbi.nlm.nih.gov/pubmed/27284066
+# publications :
+#    -
+#        pmid: 26322134
+#        display-text : |
+#            'J. Jeffryes, R. Colestani, M. El-Badawi, T. Kind... C. Henry “MINEs: Open access databases of computationally predicted enzyme promiscuity products for untargeted metabolomics” J. Cheminformatics 7:44 (2015)'
+#        link: http://www.jcheminf.com/content/7/1/44
+#    -
+#        pmid: 27284066
+#        display-text : |
+#            'C.Lerma-Ortiz, J.Jeffryes, A.Cooper...C.Henry & A.Hanson “Nothing of chemistry disappears in biology”: The Top 30 damage-prone metabolites Biochem. Soc. Trans. 44, 961-71 (2016)'
+#        link: http://www.ncbi.nlm.nih.gov/pubmed/27284066
