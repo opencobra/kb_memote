@@ -1,14 +1,14 @@
 {
-    "ver": "0.0.1",
+    "ver": "0.9.0",
     "authors": [
-        "janaka"
+        "janaka", "fliu"
     ],
     "contact": "janakaed@anl.gov",
     "visible": true,
-    "categories": ["active"],
+    "categories": ["active", "metabolic_modeling"],
     "widgets": {
         "input": null,
-        "output": "kbaseTabTable"
+        "output": "no-display"
     },
     "parameters": [
         {
@@ -23,78 +23,23 @@
             }
         },
         {
-            "id": "rule_set",
-            "optional": false,
+            "id": "media_id",
+            "optional": true,
             "advanced": false,
             "allow_multiple": false,
-            "default_values": [ "enzymatic" ],
-            "field_type": "dropdown",
-            "dropdown_options": {
-                "options": [
-                    {
-                        "value": "enzymatic",
-                        "display": "Enzymatic Rules",
-                        "id": "enz",
-                        "ui_name": "Enzymatic Rules"
-                    },
-                    {
-                        "value": "spontaneous",
-                        "display": "Spontaneous Rules",
-                        "id": "spont",
-                        "ui_name": "Spontaneous Rules"
-                    }
-                ]
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [ "KBaseBiochem.Media" ]
             }
-        },
-        {
-		    "id" : "generations",
-		    "optional" : false,
-		    "advanced" : false,
-		    "allow_multiple" : false,
-		    "default_values" : [ 1 ],
-			"field_type": "dropdown",
-            "dropdown_options": {
-                "options": [
-                    {
-                        "value": 1,
-                        "display": "One",
-                        "id": "One",
-                        "ui_name": "One"
-                    },
-                    {
-                        "value": 2,
-                        "display": "Two",
-                        "id": "Two",
-                        "ui_name": "Two"
-                    },
-                    {
-                        "value": 3,
-                        "display": "Three",
-                        "id": "Two",
-                        "ui_name": "Three"
-                    }
-                ]
-            }
-		},
-        {
-            "id" : "out_model_id",
-            "optional" : false,
-            "advanced" : false,
-            "allow_multiple" : false,
-            "default_values" : [ "" ],
-            "field_type" : "text",
-            "text_options" : {
-            "valid_ws_types" : [ "KBaseFBA.FBAModel" ],
-            "is_output_name":true
-            }
-         }
+        }
 
     ],
     "behavior": {
         "service-mapping": {
             "url": "",
             "name": "kb_memote",
-            "method": "runMemote",
+            "method": "run_memote",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
@@ -105,30 +50,22 @@
                     "target_property": "model_id"
                 },
                 {
-                    "input_parameter": "rule_set",
-                    "target_property": "rule_set"
-                },
-                {
-                    "input_parameter": "generations",
-                    "target_property": "generations"
-                },
-                {
-                    "input_parameter": "out_model_id",
-                    "target_property": "out_model_id"
+                    "input_parameter": "media_id",
+                    "target_property": "media_id"
                 }
             ],
             "output_mapping": [
-                {
-                  "constant_value": "KBaseFBA.FBAModel",
-                  "target_property": "type"
+      		    {
+                    "service_method_output_path": [0, "report_name"],
+                    "target_property": "report_name"
                 },
                 {
-                  "input_parameter": "out_model_id",
-                  "target_property": "obj"
+                    "service_method_output_path": [0, "report_ref"],
+                    "target_property": "report_ref"
                 },
                 {
-                  "narrative_system_variable": "workspace",
-                  "target_property": "ws"
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace_name"
                 }
               ]
         }

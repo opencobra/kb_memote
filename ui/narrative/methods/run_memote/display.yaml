@@ -1,11 +1,12 @@
 #
 # define display information
 #
-name: Memote - Description
+name: Memote - Genome-Scale Model Test Suite
 tooltip: |
-    some extended description
+    Genome-Scale Model Test Suite
 screenshots: []
-icon: icon.png
+
+icon: memote.png
 
 #
 # define a set of similar methods that might be useful to the user
@@ -28,24 +29,14 @@ suggestions:
 parameters :
     model_id :
         ui-name : |
-            Input Model Name
+            Metabolic Model
         short-hint : |
-            Model with source compounds
-    rule_set :
+            Model to test
+    media_id :
         ui-name : |
-            Reaction rule set
+            Media
         short-hint : |
-            The set of reaction rules which will be applied to the compounds
-    generations :
-        ui-name : |
-            Number of generations
-        short-hint : |
-            The nuber of times reaction rules will be applied to the compounds
-    out_model_id :
-        ui-name : |
-            Output Model Name
-        short-hint : |
-           Name of new model
+            Media to test with the model
 description : |
 
      <p>Genome-scale metabolic models are tough to understand at a glance.
@@ -69,3 +60,4 @@ description : |
 #        display-text : |
 #            'C.Lerma-Ortiz, J.Jeffryes, A.Cooper...C.Henry & A.Hanson “Nothing of chemistry disappears in biology”: The Top 30 damage-prone metabolites Biochem. Soc. Trans. 44, 961-71 (2016)'
 #        link: http://www.ncbi.nlm.nih.gov/pubmed/27284066
+

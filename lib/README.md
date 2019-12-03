@@ -1,6 +1,3 @@
-This directory should contain your module's code.
-A sample implementation file has been provided for you in
+This directory contains the module's source code and any installed clients for other SDK modules.
 
-```biokbase/kb_memote/Impl.py```
-
-Run `make` in the root to generate your language-specific client libraries.
+To re-generate any templated source code in this directory, run `make` in the root of this module.

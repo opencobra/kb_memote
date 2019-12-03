@@ -1,2 +1,5 @@
+.DS_Store
+
 test_local
 sdk.cfg
+.ipynb_checkpoints
